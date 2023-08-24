@@ -1,0 +1,69 @@
+[tool.poetry]
+name = "control-cost-app"
+version = "0.1.0"
+description = ""
+authors = ["Icaro Carmona de Almeida"]
+readme = "README.md"
+
+
+[tool.poetry.dependencies]
+python = "^3.11"
+streamlit = "^1.25.0"
+snowflake-connector-python = { extras = ["pandas"], version = "^3.1.0" }
+simplejson = "^3.19.1"
+
+
+[tool.poetry.group.dev.dependencies]
+taskipy = "^1.12.0"
+pytest = "^7.4.0"
+pytest-cov = "^4.1.0"
+blue = "^0.9.1"
+ruff = "^0.0.285"
+httpx = "^0.24.1"
+isort = "^5.12.0"
+mypy = "^1.5.1"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.ruff]
+exclude = [
+    ".git",
+    ".vscode",
+    ".pytest_cache",
+    ".mypy_cache",
+    ".venv",
+    ".env",
+    ".direnv",
+    "streamlit_patches.py",
+]
+target-version = "py39"
+ignore = ["E501"]
+line-length = 88
+select = ["B", "E", "F", "W", "I"]
+
+[tool.ruff.per-file-ignores]
+
+[tool.isort]
+profile = "black"
+line_length = 79
+
+[tool.pytest.ini_options]
+pythonpath = "."
+
+[tool.taskipy.tasks]
+lint = 'ruff . && blue --check . --diff'
+format = 'blue .  && isort .'
+run = 'streamlit run control_cost/streamlit_app.py'
+pre_test = 'task lint'
+test = 'pytest -s -x --cov=fast_zero -vv'
+post_test = 'coverage html'
+
+
+[tool.mypy]
+files = ["**/*.py"]
+follow_imports = "silent"
+ignore_missing_imports = true
+scripts_are_modules = true
+python_version = "3.11.4"
